@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LotGenie — Investor Deck</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f5f5f7;
+      --surface: #ffffff;
+      --text: #1d1d1f;
+      --muted: #6e6e73;
+      --muted-light: #86868b;
+      --accent: #0071e3;
+      --red: #ff3b30;
+      --green: #34c759;
+      --shadow: 0 2px 24px rgba(0, 0, 0, 0.07);
+      --shadow-lg: 0 12px 48px rgba(0, 0, 0, 0.1);
+      --radius: 20px;
+      --font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", sans-serif;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .deck { width: 100vw; height: 100vh; position: relative; }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      padding: 64px 80px 88px;
+      display: flex;
+      flex-direction: column;
+      justify-content: safe center;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(8px);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+      overflow-y: auto;
+    }
+
+    .slide.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: none;
+      z-index: 1;
+    }
+
+    .slide-inner {
+      max-width: 1120px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* Typography */
+    .eyebrow {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--accent);
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: clamp(2.5rem, 5vw, 4.25rem);
+      font-weight: 600;
+      letter-spacing: -0.04em;
+      line-height: 1.02;
+    }
+
+    h2 {
+      font-size: clamp(1.75rem, 3.2vw, 2.65rem);
+      font-weight: 600;
+      letter-spacing: -0.03em;
+      line-height: 1.08;
+      margin-bottom: 10px;
+    }
+
+    .sub {
+      font-size: clamp(1.05rem, 1.6vw, 1.3rem);
+      color: var(--muted);
+      font-weight: 400;
+      line-height: 1.4;
+      letter-spacing: -0.015em;
+      max-width: 640px;
+    }
+
+    .sub.wide { max-width: 720px; margin-bottom: 32px; }
+
+    .body {
+      font-size: 1rem;
+      color: var(--muted);
+      line-height: 1.55;
+      letter-spacing: -0.01em;
+    }
+
+    .kicker {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: -0.01em;
+    }
+
+    /* Layout */
+    .row { display: flex; gap: 48px; align-items: center; }
+    .row-top { align-items: flex-start; }
+    .col { flex: 1; min-width: 0; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+    /* Components */
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 28px 0;
+    }
+
+    .pill {
+      padding: 10px 18px;
+      background: var(--surface);
+      border-radius: 980px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      box-shadow: var(--shadow);
+      letter-spacing: -0.01em;
+    }
+
+    .pill span {
+      color: var(--muted-light);
+      margin-right: 6px;
+      font-weight: 600;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .badge {
+      padding: 7px 14px;
+      background: var(--surface);
+      border-radius: 980px;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      box-shadow: var(--shadow);
+    }
+
+    .badge .dot {
+      display: inline-block;
+      width: 7px; height: 7px;
+      background: var(--green);
+      border-radius: 50%;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    ul.clean {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    ul.clean li {
+      font-size: 1.0625rem;
+      line-height: 1.4;
+      letter-spacing: -0.015em;
+      padding-left: 20px;
+      position: relative;
+    }
+
+    ul.clean li::before {
+      content: '';
+      position: absolute;
+      left: 0; top: 0.55em;
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    .stat {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 24px 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .stat .num {
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 600;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .stat .num.red { color: var(--red); }
+    .stat .num.green { color: var(--green); }
+    .stat .num.blue { color: var(--accent); }
+
+    .stat .lbl {
+      font-size: 0.8125rem;
+      color: var(--muted-light);
+      letter-spacing: -0.01em;
+    }
+
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .compare-col {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow);
+    }
+
+    .compare-col h3 {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted-light);
+      margin-bottom: 20px;
+      font-weight: 600;
+    }
+
+    .compare-col.legacy { box-shadow: var(--shadow), inset 3px 0 0 var(--red); }
+    .compare-col.us { box-shadow: var(--shadow), inset 3px 0 0 var(--accent); }
+
+    .step-line {
+      font-size: 0.9375rem;
+      color: var(--muted);
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .step-line:last-child { border: none; }
+
+    .traction-row {
+      display: flex;
+      align-items: stretch;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .traction-row .stat { flex: 1; }
+
+    .callout {
+      background: var(--surface);
+      border-radius: 14px;
+      padding: 20px 24px;
+      box-shadow: var(--shadow);
+      border-left: 3px solid var(--accent);
+      margin-top: 24px;
+    }
+
+    .callout strong { color: var(--text); font-weight: 600; }
+
+    .funnel { display: flex; flex-direction: column; gap: 6px; }
+
+    .funnel-bar {
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--surface);
+      border-radius: 10px;
+      box-shadow: var(--shadow);
+      font-size: 0.8125rem;
+      font-weight: 500;
+      position: relative;
+    }
+
+    .funnel-bar.leak {
+      background: #fff5f5;
+      box-shadow: var(--shadow), inset 0 0 0 1px rgba(255,59,48,0.12);
+    }
+
+    .funnel-bar.leak .tag {
+      position: absolute;
+      right: -8px;
+      transform: translateX(100%);
+      font-size: 0.6875rem;
+      color: var(--red);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .funnel-bar.win {
+      background: #f0fdf4;
+      box-shadow: var(--shadow), inset 0 0 0 1px rgba(52,199,89,0.15);
+    }
+
+    .fix-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .fix-item {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 0.8125rem;
+      color: var(--muted);
+      box-shadow: var(--shadow);
+      line-height: 1.4;
+    }
+
+    .fix-item strong { color: var(--text); display: block; margin-bottom: 2px; font-size: 0.875rem; }
+
+    .fund-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.06);
+      font-size: 0.9375rem;
+    }
+
+    .fund-row:last-child { border: none; font-weight: 600; }
+
+    .fund-row .amt {
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .fund-panel {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .sprint {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-top: 32px;
+    }
+
+    .sprint-block {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .sprint-block .when {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-bottom: 12px;
+    }
+
+    .sprint-block li {
+      font-size: 0.8125rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+      line-height: 1.35;
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .sprint-block .focus {
+      font-size: 0.8125rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .ask-panel {
+      text-align: center;
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 56px 64px;
+      box-shadow: var(--shadow-lg);
+      max-width: 520px;
+      margin: 36px auto 0;
+    }
+
+    .ask-panel .amount {
+      font-size: clamp(3.5rem, 7vw, 5rem);
+      font-weight: 600;
+      letter-spacing: -0.04em;
+      line-height: 1;
+      margin-bottom: 20px;
+    }
+
+    .ask-panel .targets {
+      display: flex;
+      justify-content: center;
+      gap: 32px;
+      margin-top: 8px;
+    }
+
+    .ask-panel .targets div {
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+
+    .ask-panel .targets strong {
+      display: block;
+      color: var(--text);
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    /* Media row (image + copy, two columns) */
+    .media-row { align-items: center; gap: 56px; }
+
+    .media-photo {
+      width: 100%;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-lg);
+      display: block;
+      object-fit: cover;
+    }
+
+    /* Timeline (competitor founding years + iPhone milestone) */
+    .timeline {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin: 48px 0 8px;
+      padding: 0 4px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      top: 7px; left: 0; right: 0;
+      height: 2px;
+      background: #d2d2d7;
+    }
+
+    .timeline-point {
+      position: relative;
+      flex: 1;
+      text-align: center;
+    }
+
+    .timeline-point .year {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--muted-light);
+      letter-spacing: -0.01em;
+      margin-bottom: 12px;
+    }
+
+    .timeline-point .dot {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 2px solid var(--muted-light);
+      margin: 0 auto 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .timeline-point .logo-mini {
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .timeline-point .logo-mini img {
+      max-height: 32px;
+      max-width: 110px;
+      object-fit: contain;
+    }
+
+    .timeline-point.milestone .year { color: var(--accent); font-weight: 700; }
+    .timeline-point.milestone .dot { background: var(--accent); border-color: var(--accent); width: 16px; height: 16px; }
+    .timeline-point.milestone .label { font-size: 0.8125rem; font-weight: 700; color: var(--accent); }
+
+    /* Reveal hero (product slide — camera capture -> live website) */
+
+    .reveal-hero {
+      width: 100%;
+      max-width: 340px;
+      margin: 0 auto;
+    }
+
+    .reveal-hero img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* Outcomes row (mirrors the marketing site's "what you get" flow) */
+    .outcomes-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 36px;
+    }
+
+    .outcome-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .outcome-thumb {
+      height: 92px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+    }
+
+    .outcome-thumb img {
+      max-height: 92px;
+      max-width: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 6px 16px rgba(0,0,0,0.12));
+    }
+
+    .outcome-card h4 {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      margin-bottom: 6px;
+    }
+
+    .outcome-card p {
+      font-size: 0.8125rem;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    /* Growth loop */
+    .loop-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-top: 20px;
+    }
+
+    .loop-col h3 {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+
+    .mini-stats { display: flex; gap: 10px; margin-bottom: 16px; }
+
+    .mini-stat {
+      flex: 1;
+      background: var(--surface);
+      border-radius: 10px;
+      padding: 10px 8px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .mini-stat .v {
+      font-size: 1.0625rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .mini-stat .l {
+      font-size: 0.625rem;
+      color: var(--muted-light);
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-top: 2px;
+    }
+
+    .creative-card {
+      background: var(--surface);
+      border-radius: 14px;
+      padding: 14px 16px;
+      box-shadow: var(--shadow);
+      margin-bottom: 10px;
+    }
+
+    .creative-card .name {
+      font-size: 0.875rem;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .creative-card .name .ctr { color: var(--green); font-weight: 700; font-size: 0.8125rem; }
+
+    .creative-card .meta {
+      font-size: 0.75rem;
+      color: var(--muted-light);
+      display: flex;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+
+    .creative-card .insight {
+      font-size: 0.75rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    /* Forecast */
+    .forecast-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 28px;
+      background: var(--surface);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .forecast-table th,
+    .forecast-table td {
+      padding: 16px 20px;
+      text-align: left;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      font-size: 0.9375rem;
+    }
+
+    .forecast-table th {
+      font-size: 0.6875rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted-light);
+      background: #fafafa;
+      font-weight: 600;
+    }
+
+    .forecast-table td.num {
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .forecast-table td.mrr { color: var(--accent); font-size: 1.0625rem; }
+    .forecast-table tr:last-child td { border: none; }
+
+    /* Margins */
+    .margin-bars { margin-top: 32px; display: flex; flex-direction: column; gap: 20px; }
+
+    .margin-row label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .margin-row label span { color: var(--muted); font-weight: 400; font-size: 0.8125rem; }
+
+    .margin-track {
+      height: 32px;
+      background: #e8e8ed;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .margin-fill {
+      height: 100%;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      padding-left: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .margin-fill.bad { background: var(--red); width: 70%; }
+    .margin-fill.good { background: var(--green); width: 93%; }
+
+    /* Global distribution */
+    .global-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 28px;
+    }
+
+    .global-card {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .global-card h3 {
+      font-size: 0.9375rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .global-card p { font-size: 0.8125rem; color: var(--muted); line-height: 1.45; }
+
+    .global-card.us-limit { box-shadow: var(--shadow), inset 3px 0 0 var(--red); }
+    .global-card.lg-win { box-shadow: var(--shadow), inset 3px 0 0 var(--green); }
+
+    .platform-row {
+      display: flex;
+      gap: 14px;
+      margin-top: 24px;
+      justify-content: center;
+    }
+
+    .platform-badge {
+      background: var(--surface);
+      padding: 16px 24px;
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+      text-align: center;
+      font-size: 0.8125rem;
+      font-weight: 600;
+    }
+
+    .platform-badge small {
+      display: block;
+      font-weight: 400;
+      color: var(--muted);
+      margin-top: 4px;
+      font-size: 0.6875rem;
+    }
+
+    /* Infrastructure checklist */
+    .infra-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .infra-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      background: var(--surface);
+      border-radius: 14px;
+      padding: 18px 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .infra-item .icon {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: #f0fdf4;
+      color: var(--green);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+      font-size: 0.875rem;
+    }
+
+    .infra-item strong {
+      display: block;
+      font-size: 0.9375rem;
+      margin-bottom: 4px;
+    }
+
+    .infra-item p {
+      font-size: 0.8125rem;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    /* AI slide */
+    .ai-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      margin-top: 24px;
+      align-items: start;
+    }
+
+    .genie-chat {
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .genie-chat .bubble {
+      background: #f5f5f7;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 0.8125rem;
+      line-height: 1.45;
+      margin-bottom: 10px;
+      color: var(--muted);
+    }
+
+    .genie-chat .bubble.user {
+      background: #e8f4fd;
+      margin-left: 20px;
+    }
+
+    .genie-chat .bubble .who {
+      font-size: 0.625rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+
+    .ai-pillars {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .ai-pillar {
+      background: var(--surface);
+      border-radius: 12px;
+      padding: 14px 16px;
+      box-shadow: var(--shadow);
+      font-size: 0.8125rem;
+      color: var(--muted);
+    }
+
+    .ai-pillar strong { color: var(--text); display: block; font-size: 0.875rem; margin-bottom: 2px; }
+
+    /* Nav */
+    .progress {
+      position: fixed; top: 0; left: 0; height: 2px;
+      background: var(--accent);
+      transition: width 0.35s ease;
+      z-index: 100;
+    }
+
+    .brand {
+      position: fixed; top: 24px; left: 36px;
+      z-index: 100;
+    }
+
+    .brand img {
+      height: 32px;
+      width: auto;
+      display: block;
+    }
+
+    .cover-logo {
+      height: clamp(88px, 14vw, 132px);
+      width: auto;
+      margin: 0 auto 44px;
+      display: block;
+    }
+
+    .cover {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .cover-headline {
+      font-size: clamp(2.25rem, 4.8vw, 3.75rem);
+      font-weight: 600;
+      letter-spacing: -0.045em;
+      line-height: 1.04;
+      max-width: 680px;
+    }
+
+    .cover-headline .line2 {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-weight: 500;
+    }
+
+    .nav {
+      position: fixed; bottom: 28px; right: 36px;
+      display: flex; align-items: center; gap: 10px;
+      z-index: 100;
+    }
+
+    .nav button {
+      width: 36px; height: 36px;
+      border: none; border-radius: 50%;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      cursor: pointer;
+      font-size: 1rem;
+      color: var(--text);
+    }
+
+    .nav button:hover { background: #e8e8ed; }
+
+    .nav .count {
+      font-size: 0.75rem;
+      color: var(--muted-light);
+      min-width: 44px;
+      text-align: center;
+    }
+
+    @media (max-width: 1000px) {
+      .slide { padding: 48px 28px 72px; }
+      .row, .compare, .sprint, .global-grid, .ai-layout, .media-row, .loop-grid { grid-template-columns: 1fr; display: flex; flex-direction: column; align-items: stretch; }
+      .logo-row { flex-wrap: wrap; }
+      .logo-item { min-width: 140px; }
+      .funnel-bar.leak .tag { position: static; transform: none; display: block; margin-top: 4px; }
+      .platform-row { flex-direction: column; align-items: stretch; }
+      .timeline { flex-direction: column; align-items: flex-start; gap: 20px; }
+      .timeline::before { display: none; }
+      .timeline-point .logo-mini { justify-content: flex-start; }
+      .reveal-hero { max-width: 300px; margin: 0 auto; }
+      .outcomes-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+<div class="brand"><img src="assets/lotgenie-logo.png" alt="LotGenie"></div>
+
+<div class="deck" id="deck">
+
+  <!-- 1 · COVER -->
+  <section class="slide active">
+    <div class="slide-inner cover">
+      <img src="assets/lotgenie-logo.png" alt="LotGenie" class="cover-logo">
+      <h1 class="cover-headline">
+        Built for the lot.
+        <span class="line2">Not the back office.</span>
+      </h1>
+    </div>
+  </section>
+
+  <!-- 2 · PROBLEM -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="row media-row">
+        <div class="col">
+          <img src="assets/small-lot.jpg" alt="Independent used car lot" class="media-photo">
+        </div>
+        <div class="col">
+          <div class="eyebrow">The problem</div>
+          <h2>Dealers need an online presence.</h2>
+          <ul class="clean" style="margin-top:20px">
+            <li>Full dealer management systems built for franchise dealerships include one — but cost $1,000–$5,000+ a month</li>
+            <li>A "web guy" can build a site, but it's just a listing page — dealers still can't message buyers, and every update means another phone call</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 · CURRENT SOLUTIONS -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="eyebrow">The current options</div>
+      <h2>Software for independent dealers already exists.</h2>
+      <p class="sub wide">These are the tools most independent dealers already use — started well before the smartphone did.</p>
+      <div class="timeline">
+        <div class="timeline-point">
+          <div class="year">1996</div>
+          <div class="dot"></div>
+          <div class="logo-mini"><img src="assets/logos/dealercenter-logo.webp" alt="DealerCenter"></div>
+        </div>
+        <div class="timeline-point">
+          <div class="year">1999</div>
+          <div class="dot"></div>
+          <div class="logo-mini"><img src="assets/logos/Carsforsale-Logo.png" alt="Carsforsale"></div>
+        </div>
+        <div class="timeline-point">
+          <div class="year">2004</div>
+          <div class="dot"></div>
+          <div class="logo-mini"><img src="assets/logos/dealer-on-logo.png" alt="DealerOn"></div>
+        </div>
+        <div class="timeline-point milestone">
+          <div class="year">2007</div>
+          <div class="dot"></div>
+          <div class="label">iPhone launches</div>
+        </div>
+      </div>
+      <p class="callout" style="margin-top:40px"><strong>All three were built in the 1990s and 2000s — before the iPhone existed.</strong> None of them were designed mobile-first, and it still shows in how dealers have to run them today.</p>
+    </div>
+  </section>
+
+  <!-- 4 · WHAT DEALERS WANT IN 2026 -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="eyebrow">What's changed</div>
+      <h2>Dealers want Instagram.<br>They're stuck with a filing cabinet.</h2>
+      <p class="sub wide">The bar moved everywhere else in their life. Their business software didn't come with it.</p>
+      <ul class="clean" style="max-width:760px">
+        <li>Post something in seconds, from their phone, like any other app they use</li>
+        <li>A website that looks like 2026, not 2009</li>
+        <li>Message buyers like a DM — not wait on a lead form</li>
+        <li>No call, no demo, no waiting on a setup team</li>
+      </ul>
+      <p class="callout"><strong>The experience already exists.</strong> Just not in the software dealers run their business on — yet.</p>
+    </div>
+  </section>
+
+  <!-- 5 · LOTGENIE REVEAL -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="row media-row">
+        <div class="col">
+          <div class="eyebrow">The product</div>
+          <h2>LotGenie is that app.</h2>
+          <p class="sub">Point the camera at a car. LotGenie handles the rest.</p>
+        </div>
+        <div class="col">
+          <div class="reveal-hero">
+            <img src="assets/ui/hero-reveal.png" alt="Dealer photographs a car on their phone; it appears live on their website instantly">
+          </div>
+        </div>
+      </div>
+      <div class="outcomes-row">
+        <div class="outcome-card">
+          <div class="outcome-thumb"><img src="assets/ui/outcome-website.png" alt="LotGenie dealer app home dashboard"></div>
+          <h4>Your own dealer website</h4>
+          <p>Not a marketplace listing — a real website you own, built and hosted by LotGenie.</p>
+        </div>
+        <div class="outcome-card">
+          <div class="outcome-thumb"><img src="assets/ui/outcome-inbox.png" alt="Centralized messaging inbox with buyer inquiries"></div>
+          <h4>Every inquiry, one inbox</h4>
+          <p>Buyers text through the site. Messages stay in the app — not the dealer's personal phone.</p>
+        </div>
+        <div class="outcome-card">
+          <div class="outcome-thumb"><img src="assets/ui/outcome-appointments.png" alt="Appointment management with scheduled viewings"></div>
+          <h4>Appointments on their terms</h4>
+          <p>Buyers request viewings during business hours. No surprise visits, no personal calendar.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 · DIFFERENTIATION -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="eyebrow">Why LotGenie, not them</div>
+      <h2>Same category. Different decade.</h2>
+      <p class="sub wide">Legacy tools do the basics. LotGenie is built the way dealers actually work now.</p>
+      <div class="compare">
+        <div class="compare-col legacy">
+          <h3>Legacy competitors</h3>
+          <div class="step-line">Sales call to start</div>
+          <div class="step-line">Desktop-first dashboard</div>
+          <div class="step-line">Mobile bolted on after</div>
+          <div class="step-line">US-only rollout</div>
+        </div>
+        <div class="compare-col us">
+          <h3>LotGenie</h3>
+          <div class="step-line">Download and go</div>
+          <div class="step-line">Runs from the phone</div>
+          <div class="step-line">Native mobile, not a wrapper</div>
+          <div class="step-line">Live in any country</div>
+        </div>
+      </div>
+      <p class="callout"><strong>Only LotGenie writes the listing, hosts the site, and carries the conversation</strong> — from one app, with no one else involved.</p>
+    </div>
+  </section>
+
+  <!-- 7 · ECONOMICS -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="eyebrow">Unit economics</div>
+      <h2>Software margins — and they scale linearly.</h2>
+      <p class="sub wide">Apple's standard cut is 30%. LotGenie bills through Stripe at 2.9% — Apple approved the external billing path, so nearly every dollar is gross margin.</p>
+      <div class="row row-top">
+        <div class="col">
+          <div class="margin-bars" style="margin-top:0">
+            <div class="margin-row">
+              <label>Typical iOS subscription <span>Apple keeps 30%</span></label>
+              <div class="margin-track"><div class="margin-fill bad">~70% kept</div></div>
+            </div>
+            <div class="margin-row">
+              <label>LotGenie via Stripe <span>2.9% + $0.30</span></label>
+              <div class="margin-track"><div class="margin-fill good">~93% gross margin</div></div>
+            </div>
+          </div>
+          <div class="grid-2" style="margin-top:20px">
+            <div class="stat"><div class="num">$99</div><div class="lbl">Per dealer / month</div></div>
+            <div class="stat"><div class="num green">~$92</div><div class="lbl">Gross profit / dealer / mo</div></div>
+          </div>
+        </div>
+        <div class="col">
+          <table class="forecast-table" style="margin-top:0">
+            <thead>
+              <tr><th>Dealers</th><th>MRR</th><th>ARR</th></tr>
+            </thead>
+            <tbody>
+              <tr><td class="num">10</td><td class="num mrr">$990</td><td class="num">$11,880</td></tr>
+              <tr><td class="num">100</td><td class="num mrr">$9,900</td><td class="num">$118,800</td></tr>
+              <tr><td class="num">500</td><td class="num mrr">$49,500</td><td class="num">$594,000</td></tr>
+              <tr><td class="num">1,000</td><td class="num mrr">$99,000</td><td class="num">$1.19M</td></tr>
+              <tr><td class="num">5,000</td><td class="num mrr">$495,000</td><td class="num">$5.94M</td></tr>
+              <tr><td class="num">10,000</td><td class="num mrr">$990,000</td><td class="num">$11.9M</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <p class="kicker" style="margin-top:20px">~38,000 independent dealers in the US alone — before a single international market.</p>
+    </div>
+  </section>
+
+  <!-- 8 · TRACTION -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="eyebrow">Traction</div>
+      <h2>The hard, expensive parts are already done.</h2>
+      <p class="sub wide">Manual sales produced nothing. Paid acquisition produced real, efficient installs — and the infrastructure behind it all is live.</p>
+      <div class="traction-row" style="margin-top:24px">
+        <div class="stat"><div class="num red">280</div><div class="lbl">Cold calls + walk-ins → 0 users</div></div>
+        <div class="stat"><div class="num blue">$136.97</div><div class="lbl">Ad spend</div></div>
+        <div class="stat"><div class="num">28</div><div class="lbl">Installs</div></div>
+        <div class="stat"><div class="num blue">$4.89</div><div class="lbl">Cost per install</div></div>
+      </div>
+      <div class="grid-2" style="margin-top:16px">
+        <div class="infra-item">
+          <div class="icon">✓</div>
+          <div><strong>A2P SMS compliance approved</strong><p>Twilio, partnered with Verizon & AT&T — the regulatory hurdle most skip.</p></div>
+        </div>
+        <div class="infra-item">
+          <div class="icon">✓</div>
+          <div><strong>Stripe billing at 2.9%, not Apple's 30%</strong><p>Apple approved external Stripe billing — full checkout, subscriptions & trials live.</p></div>
+        </div>
+        <div class="infra-item">
+          <div class="icon">✓</div>
+          <div><strong>Native iOS app shipped</strong><p>Approved and live on the App Store — inventory, website, messaging, analytics.</p></div>
+        </div>
+        <div class="infra-item">
+          <div class="icon">✓</div>
+          <div><strong>Proprietary dealer list built</strong><p>28k independent dealers compiled, 11k matched in Meta for targeted ads.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 · GROWTH LOOP -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="eyebrow">The optimization loop</div>
+      <h2>We already know how to make this better.</h2>
+      <p class="sub wide">Two levers, both already in motion: sharper ad creative, and closing the activation gap. Capital buys more turns of this loop.</p>
+      <div class="loop-grid">
+        <div class="loop-col">
+          <h3>Ad creative testing</h3>
+          <div class="mini-stats">
+            <div class="mini-stat"><div class="v">$136.97</div><div class="l">Spent</div></div>
+            <div class="mini-stat"><div class="v">28</div><div class="l">Installs</div></div>
+            <div class="mini-stat"><div class="v">$4.89</div><div class="l">CPI</div></div>
+          </div>
+          <div class="creative-card">
+            <div class="name">Guided Camera <span class="ctr">1.10% CTR</span></div>
+            <div class="meta"><span>5,252 impr.</span><span>58 clicks</span></div>
+            <div class="insight">Scale winner — dominant reach, most total clicks of any creative.</div>
+          </div>
+          <div class="creative-card">
+            <div class="name">Old Dealer <span class="ctr">4.59% CTR</span></div>
+            <div class="meta"><span>1,089 impr.</span><span>50 clicks</span></div>
+            <div class="insight">Efficiency winner — highest CTR of all 14 creatives tested.</div>
+          </div>
+          <p class="body">14 creatives tested across 4 concepts. Two clear signals — doubling down on both.</p>
+        </div>
+        <div class="loop-col">
+          <h3>Activation funnel</h3>
+          <div class="funnel">
+            <div class="funnel-bar" style="width:100%">28 installs</div>
+            <div class="funnel-bar leak" style="width:82%"><span class="tag">54% drop</span>Photo source chooser</div>
+            <div class="funnel-bar leak" style="width:55%"><span class="tag">VIN / camera</span>Car data entry</div>
+            <div class="funnel-bar" style="width:35%">Listing + account</div>
+            <div class="funnel-bar win" style="width:18%">4% activation rate</div>
+          </div>
+          <div class="fix-grid">
+            <div class="fix-item"><strong>Questionnaire first</strong>Measure ICP quality from ad traffic</div>
+            <div class="fix-item"><strong>Account earlier</strong>Light dealer info → create account</div>
+            <div class="fix-item"><strong>Site provisioned</strong>First "aha" = live website + dashboard</div>
+            <div class="fix-item"><strong>Demo car path</strong>Sample inventory before real upload</div>
+          </div>
+          <p class="body">The fix is scoped. Next dollars close this gap.</p>
+        </div>
+      </div>
+      <p class="callout"><strong>This is the flywheel:</strong> sharper creative → better installs → smoother activation → more paying dealers → reinvest. Every dollar buys another turn.</p>
+    </div>
+  </section>
+
+  <!-- 10 · DISTRIBUTION -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="eyebrow">Distribution</div>
+      <h2>A global machine.<br>Competitors stop at the US border.</h2>
+      <p class="sub wide">The App Store and Meta already work everywhere. Turn on a region, run the same winning creative, reach dealers anywhere — without a regional sales team.</p>
+      <div class="platform-row">
+        <div class="platform-badge">App Store<small>Instant global availability — flip a switch per region</small></div>
+        <div class="platform-badge">Meta Ads<small>Same dealer-targeted playbook, any country</small></div>
+      </div>
+      <div class="global-grid">
+        <div class="global-card us-limit">
+          <h3>Legacy competitors</h3>
+          <p>US sales teams and demo-call onboarding, tied to domestic dealer networks. Going international means rebuilding go-to-market from scratch.</p>
+        </div>
+        <div class="global-card lg-win">
+          <h3>LotGenie</h3>
+          <p>Self-serve download, no regional office. The same app works in Texas, Ontario, or Sydney — powered by the same dealer-targeting playbook everywhere.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 11 · AI / GENIE -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="eyebrow">Long-term vision</div>
+      <h2>ChatGPT now lives inside your business.</h2>
+      <p class="sub wide">We already collect vehicle data, pricing, sale prices, images, and performance analytics. Genie — our AI dealer assistant — launches on infrastructure that's already running.</p>
+      <div class="ai-layout">
+        <div class="genie-chat">
+          <div class="bubble user"><div class="who">Dealer</div>Which cars should I discount this week?</div>
+          <div class="bubble"><div class="who">Genie</div>Your 2019 Camry has been listed 47 days with 12 views — 3× your lot average. Drop $800 or swap the hero photo. Your Civic is a top performer; hold price.</div>
+          <div class="bubble user"><div class="who">Dealer</div>Where am I leaving money on the table?</div>
+          <div class="bubble"><div class="who">Genie</div>3 low-mile SUVs are priced below market. 2 sedans have stale photos. I can draft new listings now.</div>
+        </div>
+        <div class="ai-pillars">
+          <div class="ai-pillar"><strong>Data already flowing</strong>Every listing, price change, view, message, and sale feeds our analytics layer.</div>
+          <div class="ai-pillar"><strong>Best sellers vs. dead stock</strong>Genie knows which cars perform, which don't, and why — per dealer, per lot.</div>
+          <div class="ai-pillar"><strong>Financial + inventory intelligence</strong>Pricing optimization, cost cuts, and listing rewrites — grounded in real dealer data.</div>
+          <div class="ai-pillar"><strong>No one else has this</strong>Competitors have dashboards. We have the pipeline and AI stack ready — launch is a switch flip.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12 · NEXT STEPS / ASK -->
+  <section class="slide">
+    <div class="slide-inner">
+      <div class="eyebrow" style="text-align:center">Next steps</div>
+      <h2 style="text-align:center">Raising $50k to run the loop.</h2>
+      <p class="sub wide" style="margin:12px auto 0;text-align:center">The product's built, the channel works, and we know exactly where the next dollar goes.</p>
+      <div class="row row-top" style="margin-top:24px;max-width:920px;margin-left:auto;margin-right:auto">
+        <div class="col fund-panel">
+          <div class="fund-row"><span>Ad spend & data collection</span><span class="amt">$18,000</span></div>
+          <div class="fund-row"><span>Creative production & testing</span><span class="amt">$6,000</span></div>
+          <div class="fund-row"><span>Onboarding rebuild</span><span class="amt">$12,000</span></div>
+          <div class="fund-row"><span>AI assistant (v1)</span><span class="amt">$8,000</span></div>
+          <div class="fund-row"><span>Analytics & attribution</span><span class="amt">$4,000</span></div>
+          <div class="fund-row"><span>Experiments & buffer</span><span class="amt">$2,000</span></div>
+          <div class="fund-row"><span>Total</span><span class="amt">$50,000</span></div>
+        </div>
+        <div class="col">
+          <div class="ask-panel" style="margin:0">
+            <div class="amount">$50k</div>
+            <div class="targets">
+              <div><strong>90 days</strong>Validation sprint</div>
+              <div><strong>10 dealers</strong>Active accounts</div>
+              <div><strong>Revenue</strong>First conversions</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sprint" style="max-width:920px;margin:24px auto 0">
+        <div class="sprint-block">
+          <div class="when">Days 1–15</div>
+          <p class="focus">Ship onboarding fix + dealer questionnaire</p>
+        </div>
+        <div class="sprint-block">
+          <div class="when">Days 16–45</div>
+          <p class="focus">Scale winning creatives, test new ones</p>
+        </div>
+        <div class="sprint-block">
+          <div class="when">Days 46–75</div>
+          <p class="focus">Ship Genie v1, retarget dealer list</p>
+        </div>
+        <div class="sprint-block">
+          <div class="when">Days 76–90</div>
+          <p class="focus">10 active dealers, first paid accounts</p>
+        </div>
+      </div>
+      <p class="kicker" style="margin-top:28px;text-align:center">LotGenie is rebuilding dealer web presence for the mobile-first era.</p>
+    </div>
+  </section>
+
+</div>
+
+<div class="nav">
+  <button id="prev" aria-label="Previous">←</button>
+  <span class="count" id="counter">1 / 1</span>
+  <button id="next" aria-label="Next">→</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const total = slides.length;
+  let current = 0;
+  const progress = document.getElementById('progress');
+  const counter = document.getElementById('counter');
+  const brand = document.querySelector('.brand');
+
+  function go(n) {
+    if (n < 0 || n >= total) return;
+    slides[current].classList.remove('active');
+    current = n;
+    slides[current].classList.add('active');
+    progress.style.width = ((current + 1) / total * 100) + '%';
+    counter.textContent = (current + 1) + ' / ' + total;
+    if (brand) brand.style.visibility = current === 0 ? 'hidden' : 'visible';
+  }
+
+  document.getElementById('prev').onclick = () => go(current - 1);
+  document.getElementById('next').onclick = () => go(current + 1);
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); go(current + 1); }
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(current - 1); }
+    if (e.key === 'Home') go(0);
+    if (e.key === 'End') go(total - 1);
+  });
+
+  let tx = 0;
+  document.addEventListener('touchstart', e => { tx = e.changedTouches[0].screenX; });
+  document.addEventListener('touchend', e => {
+    const d = tx - e.changedTouches[0].screenX;
+    if (Math.abs(d) > 50) go(d > 0 ? current + 1 : current - 1);
+  });
+
+  progress.style.width = (100 / total) + '%';
+  counter.textContent = '1 / ' + total;
+  if (brand) brand.style.visibility = 'hidden';
+</script>
+
+</body>
+</html>
