@@ -435,31 +435,44 @@
       object-fit: cover;
     }
 
-    /* Timeline (competitor founding years + iPhone milestone) */
+    /* Timeline — legacy cluster → iPhone → Instagram → 2026 */
     .timeline {
       position: relative;
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
+      height: 148px;
       margin: 48px 0 8px;
-      padding: 0 4px;
     }
 
-    .timeline::before {
-      content: '';
+    .timeline-line {
       position: absolute;
-      top: 7px; left: 0; right: 0;
+      top: 40px;
+      left: 0;
+      right: 0;
       height: 2px;
       background: #d2d2d7;
     }
 
-    .timeline-point {
-      position: relative;
-      flex: 1;
+    .timeline-stop {
+      position: absolute;
+      top: 0;
+      transform: translateX(-50%);
       text-align: center;
+      width: max-content;
     }
 
-    .timeline-point .year {
+    .timeline-stop.legacy {
+      left: 0;
+      transform: none;
+      text-align: left;
+      max-width: 280px;
+    }
+
+    .timeline-stop.end {
+      left: 100%;
+      transform: translateX(-100%);
+      text-align: right;
+    }
+
+    .timeline-stop .year {
       font-size: 0.8125rem;
       font-weight: 700;
       color: var(--muted-light);
@@ -467,8 +480,9 @@
       margin-bottom: 12px;
     }
 
-    .timeline-point .dot {
-      width: 14px; height: 14px;
+    .timeline-stop .dot {
+      width: 14px;
+      height: 14px;
       border-radius: 50%;
       background: var(--surface);
       border: 2px solid var(--muted-light);
@@ -477,22 +491,53 @@
       z-index: 1;
     }
 
-    .timeline-point .logo-mini {
-      height: 32px;
+    .timeline-stop.legacy .dot,
+    .timeline-stop.end .dot {
+      margin-left: 0;
+      margin-right: 0;
+    }
+
+    .timeline-stop.end .dot {
+      margin-left: auto;
+    }
+
+    .legacy-logos {
       display: flex;
-      align-items: center;
-      justify-content: center;
+      flex-direction: column;
+      gap: 10px;
+      align-items: flex-start;
     }
 
-    .timeline-point .logo-mini img {
-      max-height: 32px;
-      max-width: 110px;
+    .legacy-logos img {
+      max-height: 28px;
+      max-width: 120px;
       object-fit: contain;
+      opacity: 0.72;
     }
 
-    .timeline-point.milestone .year { color: var(--accent); font-weight: 700; }
-    .timeline-point.milestone .dot { background: var(--accent); border-color: var(--accent); width: 16px; height: 16px; }
-    .timeline-point.milestone .label { font-size: 0.8125rem; font-weight: 700; color: var(--accent); }
+    .timeline-stop.milestone .year { color: var(--accent); font-weight: 700; }
+    .timeline-stop.milestone .dot {
+      background: var(--accent);
+      border-color: var(--accent);
+      width: 16px;
+      height: 16px;
+    }
+    .timeline-stop.milestone .label {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      color: var(--accent);
+      max-width: 120px;
+      line-height: 1.25;
+    }
+
+    .timeline-stop.end .year,
+    .timeline-stop.end .label { color: var(--text); }
+    .timeline-stop.end .dot {
+      background: var(--text);
+      border-color: var(--text);
+      width: 16px;
+      height: 16px;
+    }
 
     /* Reveal hero (product slide — camera capture -> live website) */
 
@@ -927,9 +972,10 @@
       .logo-item { min-width: 140px; }
       .funnel-bar.leak .tag { position: static; transform: none; display: block; margin-top: 4px; }
       .platform-row { flex-direction: column; align-items: stretch; }
-      .timeline { flex-direction: column; align-items: flex-start; gap: 20px; }
-      .timeline::before { display: none; }
-      .timeline-point .logo-mini { justify-content: flex-start; }
+      .timeline { height: auto; padding-bottom: 8px; }
+      .timeline-line { display: none; }
+      .timeline-stop { position: static; transform: none !important; text-align: left !important; margin-bottom: 20px; }
+      .legacy-logos { flex-direction: row; flex-wrap: wrap; gap: 16px; }
       .reveal-hero { max-width: 300px; margin: 0 auto; }
       .outcomes-row { grid-template-columns: 1fr; }
     }
@@ -979,28 +1025,37 @@
       <h2>Software for independent dealers already exists.</h2>
       <p class="sub wide">These are the tools most independent dealers already use — started well before the smartphone did.</p>
       <div class="timeline">
-        <div class="timeline-point">
+        <div class="timeline-line"></div>
+
+        <div class="timeline-stop legacy" style="left: 0%">
           <div class="year">1996</div>
           <div class="dot"></div>
-          <div class="logo-mini"><img src="assets/logos/dealercenter-logo.webp" alt="DealerCenter"></div>
+          <div class="legacy-logos">
+            <img src="assets/logos/dealercenter-logo.webp" alt="DealerCenter">
+            <img src="assets/logos/Carsforsale-Logo.png" alt="Carsforsale">
+            <img src="assets/logos/dealer-on-logo.png" alt="DealerOn">
+          </div>
         </div>
-        <div class="timeline-point">
-          <div class="year">1999</div>
-          <div class="dot"></div>
-          <div class="logo-mini"><img src="assets/logos/Carsforsale-Logo.png" alt="Carsforsale"></div>
-        </div>
-        <div class="timeline-point">
-          <div class="year">2004</div>
-          <div class="dot"></div>
-          <div class="logo-mini"><img src="assets/logos/dealer-on-logo.png" alt="DealerOn"></div>
-        </div>
-        <div class="timeline-point milestone">
+
+        <div class="timeline-stop milestone" style="left: 37%">
           <div class="year">2007</div>
           <div class="dot"></div>
           <div class="label">iPhone launches</div>
         </div>
+
+        <div class="timeline-stop milestone" style="left: 47%">
+          <div class="year">2010</div>
+          <div class="dot"></div>
+          <div class="label">Instagram launches</div>
+        </div>
+
+        <div class="timeline-stop end milestone" style="left: 100%">
+          <div class="year">2026</div>
+          <div class="dot"></div>
+          <div class="label">Today</div>
+        </div>
       </div>
-      <p class="callout" style="margin-top:40px"><strong>All three were built in the 1990s and 2000s — before the iPhone existed.</strong> None of them were designed mobile-first, and it still shows in how dealers have to run them today.</p>
+      <p class="callout" style="margin-top:40px"><strong>Built before the iPhone. Never rebuilt for the mobile era.</strong> The bar moved — Instagram, messaging, self-serve apps — and dealer software stayed behind.</p>
     </div>
   </section>
 
