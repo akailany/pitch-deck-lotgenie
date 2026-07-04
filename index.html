@@ -435,108 +435,65 @@
       object-fit: cover;
     }
 
-    /* Timeline — legacy cluster → iPhone → Instagram → 2026 */
-    .timeline {
+    /* Current solutions diagram */
+    .solutions-diagram {
+      width: 100%;
+      margin: 32px 0 0;
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .solutions-diagram img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* What's changed slide — copy left 2/3, image centered in right 1/3 */
+    .slide-changed {
+      padding: 24px 100px 80px 80px;
+      overflow: hidden;
+    }
+
+    .changed-body {
       position: relative;
-      height: 148px;
-      margin: 48px 0 8px;
+      height: calc(100vh - 104px);
+      width: 100%;
     }
 
-    .timeline-line {
-      position: absolute;
-      top: 40px;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: #d2d2d7;
-    }
-
-    .timeline-stop {
-      position: absolute;
-      top: 0;
-      transform: translateX(-50%);
-      text-align: center;
-      width: max-content;
-    }
-
-    .timeline-stop.legacy {
-      left: 0;
-      transform: none;
-      text-align: left;
-      max-width: 280px;
-    }
-
-    .timeline-stop.end {
-      left: 100%;
-      transform: translateX(-100%);
-      text-align: right;
-    }
-
-    .timeline-stop .year {
-      font-size: 0.8125rem;
-      font-weight: 700;
-      color: var(--muted-light);
-      letter-spacing: -0.01em;
-      margin-bottom: 12px;
-    }
-
-    .timeline-stop .dot {
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: var(--surface);
-      border: 2px solid var(--muted-light);
-      margin: 0 auto 16px;
+    .changed-copy {
       position: relative;
       z-index: 1;
-    }
-
-    .timeline-stop.legacy .dot,
-    .timeline-stop.end .dot {
-      margin-left: 0;
-      margin-right: 0;
-    }
-
-    .timeline-stop.end .dot {
-      margin-left: auto;
-    }
-
-    .legacy-logos {
+      width: 54%;
+      max-width: 580px;
+      height: 100%;
+      padding-right: 40px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      align-items: flex-start;
+      justify-content: center;
     }
 
-    .legacy-logos img {
-      max-height: 28px;
-      max-width: 120px;
+    .changed-visual {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 54%;
+      right: 0;
+      padding: 0 16px 8px 32px;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .changed-visual img {
+      height: 100%;
+      width: auto;
+      max-width: 100%;
       object-fit: contain;
-      opacity: 0.72;
-    }
-
-    .timeline-stop.milestone .year { color: var(--accent); font-weight: 700; }
-    .timeline-stop.milestone .dot {
-      background: var(--accent);
-      border-color: var(--accent);
-      width: 16px;
-      height: 16px;
-    }
-    .timeline-stop.milestone .label {
-      font-size: 0.8125rem;
-      font-weight: 700;
-      color: var(--accent);
-      max-width: 120px;
-      line-height: 1.25;
-    }
-
-    .timeline-stop.end .year,
-    .timeline-stop.end .label { color: var(--text); }
-    .timeline-stop.end .dot {
-      background: var(--text);
-      border-color: var(--text);
-      width: 16px;
-      height: 16px;
+      object-position: center center;
+      display: block;
     }
 
     /* Reveal hero (product slide — camera capture -> live website) */
@@ -972,12 +929,28 @@
       .logo-item { min-width: 140px; }
       .funnel-bar.leak .tag { position: static; transform: none; display: block; margin-top: 4px; }
       .platform-row { flex-direction: column; align-items: stretch; }
-      .timeline { height: auto; padding-bottom: 8px; }
-      .timeline-line { display: none; }
-      .timeline-stop { position: static; transform: none !important; text-align: left !important; margin-bottom: 20px; }
-      .legacy-logos { flex-direction: row; flex-wrap: wrap; gap: 16px; }
       .reveal-hero { max-width: 300px; margin: 0 auto; }
       .outcomes-row { grid-template-columns: 1fr; }
+      .slide-changed { padding: 48px 28px 72px; }
+      .changed-body {
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 28px;
+      }
+      .changed-copy { width: 100%; max-width: none; padding-right: 0; height: auto; }
+      .changed-visual {
+        position: static;
+        width: 100%;
+        height: auto;
+        pointer-events: auto;
+      }
+      .changed-visual img {
+        height: auto;
+        width: 100%;
+        max-height: 420px;
+        object-position: center;
+      }
     }
   </style>
 </head>
@@ -1022,56 +995,29 @@
   <section class="slide">
     <div class="slide-inner">
       <div class="eyebrow">The current options</div>
-      <h2>Software for independent dealers already exists.</h2>
-      <p class="sub wide">These are the tools most independent dealers already use — started well before the smartphone did.</p>
-      <div class="timeline">
-        <div class="timeline-line"></div>
-
-        <div class="timeline-stop legacy" style="left: 0%">
-          <div class="year">1996</div>
-          <div class="dot"></div>
-          <div class="legacy-logos">
-            <img src="assets/logos/dealercenter-logo.webp" alt="DealerCenter">
-            <img src="assets/logos/Carsforsale-Logo.png" alt="Carsforsale">
-            <img src="assets/logos/dealer-on-logo.png" alt="DealerOn">
-          </div>
-        </div>
-
-        <div class="timeline-stop milestone" style="left: 37%">
-          <div class="year">2007</div>
-          <div class="dot"></div>
-          <div class="label">iPhone launches</div>
-        </div>
-
-        <div class="timeline-stop milestone" style="left: 47%">
-          <div class="year">2010</div>
-          <div class="dot"></div>
-          <div class="label">Instagram launches</div>
-        </div>
-
-        <div class="timeline-stop end milestone" style="left: 100%">
-          <div class="year">2026</div>
-          <div class="dot"></div>
-          <div class="label">Today</div>
-        </div>
+      <h2>Dealer software is still stuck in the 1990s.</h2>
+      <div class="solutions-diagram">
+        <img src="assets/current-solutions-diagram.png" alt="Dealer software from 1996–2004, then iPhone, Instagram, and ChatGPT — dealer tools unchanged until today">
       </div>
-      <p class="callout" style="margin-top:40px"><strong>Built before the iPhone. Never rebuilt for the mobile era.</strong> The bar moved — Instagram, messaging, self-serve apps — and dealer software stayed behind.</p>
     </div>
   </section>
 
-  <!-- 4 · WHAT DEALERS WANT IN 2026 -->
-  <section class="slide">
-    <div class="slide-inner">
-      <div class="eyebrow">What's changed</div>
-      <h2>Dealers want Instagram.<br>They're stuck with a filing cabinet.</h2>
-      <p class="sub wide">The bar moved everywhere else in their life. Their business software didn't come with it.</p>
-      <ul class="clean" style="max-width:760px">
-        <li>Post something in seconds, from their phone, like any other app they use</li>
-        <li>A website that looks like 2026, not 2009</li>
-        <li>Message buyers like a DM — not wait on a lead form</li>
-        <li>No call, no demo, no waiting on a setup team</li>
-      </ul>
-      <p class="callout"><strong>The experience already exists.</strong> Just not in the software dealers run their business on — yet.</p>
+  <!-- 4 · WHAT'S CHANGED -->
+  <section class="slide slide-changed">
+    <div class="changed-body">
+      <div class="changed-copy">
+        <div class="eyebrow">What's changed</div>
+        <h2>How dealers run their lots today.</h2>
+        <ul class="clean" style="margin-top:20px">
+          <li>Their website was built for desktops and breaks on phones — while 80% of car shoppers browse on mobile. Nobody's hunting inventory on a laptop anymore.</li>
+          <li>No way to text customers directly. Old tools only offer lead forms and email. Dealers call or email back hours later — high friction that kills the momentum.</li>
+          <li>No mobile app — just their desktop site squeezed into a mobile browser. It looks like Windows XP, and the experience shows.</li>
+          <li>They close dealer software and open Instagram on the same phone. Uploads fail, photos are disorganized, no built-in orientation — dealers feel the gap every day.</li>
+        </ul>
+      </div>
+      <figure class="changed-visual">
+        <img src="assets/how-dealers-work-slide.png" alt="Dealer website, lead form, and inventory app on mobile — the tools dealers use today">
+      </figure>
     </div>
   </section>
 
